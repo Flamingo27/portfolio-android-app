@@ -1,6 +1,7 @@
 package com.alokparna.portfolio.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,19 +15,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,25 +44,37 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alokparna.portfolio.data.Portfolio
 
 @Composable
-fun ContactScreen(portfolio: Portfolio, modifier: Modifier = Modifier) {
+fun ContactScreen(portfolio: Portfolio, modifier: Modifier = Modifier, viewModel: PortfolioViewModel = viewModel()) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
+    val contactUiState by viewModel.contactUiState.collectAsState()
+
+    LaunchedEffect(contactUiState) {
+        if (contactUiState is ContactUiState.Success) {
+            name = ""
+            email = ""
+            message = ""
+        }
+    }
 
     LazyColumn(modifier = modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         item {
             Text(
                 text = "Get In Touch",
                 style = MaterialTheme.typography.displayMedium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
             Text(
                 text = "Let's discuss your next project or opportunity",
                 style = MaterialTheme.typography.headlineSmall,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp)
             )
             Spacer(modifier = Modifier.height(32.dp))
         }
@@ -72,7 +88,10 @@ fun ContactScreen(portfolio: Portfolio, modifier: Modifier = Modifier) {
             SendMessageForm(
                 name = name, onNameChange = { name = it },
                 email = email, onEmailChange = { email = it },
-                message = message, onMessageChange = { message = it }
+                message = message, onMessageChange = { message = it },
+                uiState = contactUiState,
+                onSendMessage = { viewModel.sendContactMessage(name, email, message) },
+                onResetState = { viewModel.resetContactState() }
             )
         }
     }
@@ -97,10 +116,12 @@ fun ContactInfoSection(portfolio: Portfolio) {
 @Composable
 fun ContactInfoItem(icon: ImageVector, label: String, value: String, onClick: () -> Unit) {
     Card(
-        elevation = CardDefaults.cardElevation(2.dp),
-        modifier = Modifier.clickable(onClick = onClick)
+        modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(16.dp)).clickable(onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(0.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
-        Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier.fillMaxWidth().padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier
                     .size(48.dp)
@@ -115,7 +136,7 @@ fun ContactInfoItem(icon: ImageVector, label: String, value: String, onClick: ()
                 Icon(icon, contentDescription = label, tint = Color.White)
             }
             Column(modifier = Modifier.padding(start = 16.dp)) {
-                Text(label, style = MaterialTheme.typography.labelMedium)
+                Text(label, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                 Text(value, style = MaterialTheme.typography.bodyLarge)
             }
         }
@@ -123,20 +144,52 @@ fun ContactInfoItem(icon: ImageVector, label: String, value: String, onClick: ()
 }
 
 @Composable
-fun SendMessageForm(name: String, onNameChange: (String) -> Unit, email: String, onEmailChange: (String) -> Unit, message: String, onMessageChange: (String) -> Unit) {
-    Card(elevation = CardDefaults.cardElevation(2.dp)) {
-        Column(modifier = Modifier.padding(16.dp)) {
+fun SendMessageForm(
+    name: String, onNameChange: (String) -> Unit,
+    email: String, onEmailChange: (String) -> Unit,
+    message: String, onMessageChange: (String) -> Unit,
+    uiState: ContactUiState,
+    onSendMessage: () -> Unit,
+    onResetState: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(16.dp)),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(0.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
             Text("Send a Message", style = MaterialTheme.typography.headlineMedium)
+            Spacer(modifier = Modifier.height(24.dp))
+            OutlinedTextField(value = name, onValueChange = onNameChange, label = { Text("Name") }, modifier = Modifier.fillMaxWidth(), enabled = uiState !is ContactUiState.Loading)
             Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(value = name, onValueChange = onNameChange, label = { Text("Name") }, modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = email, onValueChange = onEmailChange, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = message, onValueChange = onMessageChange, label = { Text("Message") }, modifier = Modifier.fillMaxWidth(), maxLines = 5)
+            OutlinedTextField(value = email, onValueChange = onEmailChange, label = { Text("Email") }, modifier = Modifier.fillMaxWidth(), enabled = uiState !is ContactUiState.Loading)
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { /* TODO: Implement send message */ }, modifier = Modifier.fillMaxWidth()) {
-                Icon(Icons.Default.Send, contentDescription = "Send Message", modifier = Modifier.padding(end = 8.dp))
-                Text("Send Message")
+            OutlinedTextField(value = message, onValueChange = onMessageChange, label = { Text("Message") }, modifier = Modifier.fillMaxWidth(), maxLines = 5, enabled = uiState !is ContactUiState.Loading)
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = onSendMessage,
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                enabled = uiState !is ContactUiState.Loading
+            ) {
+                if (uiState is ContactUiState.Loading) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                } else {
+                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send Message", modifier = Modifier.padding(end = 8.dp))
+                    Text("Send Message", style = MaterialTheme.typography.titleMedium)
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            when (uiState) {
+                is ContactUiState.Success -> {
+                    Text("✅ Message sent! I'll get back to you soon.", color = Color.Green, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                    LaunchedEffect(Unit) { kotlinx.coroutines.delay(3000); onResetState() }
+                }
+                is ContactUiState.Error -> {
+                    Text("❌ Something went wrong. Please try again later.", color = Color.Red, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                    LaunchedEffect(Unit) { kotlinx.coroutines.delay(3000); onResetState() }
+                }
+                else -> {}
             }
         }
     }

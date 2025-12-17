@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Email
@@ -43,14 +44,14 @@ import kotlinx.coroutines.launch
 
 sealed class Screen(val route: String, val icon: ImageVector, val title: String) {
     object Hero : Screen("hero", Icons.Default.Person, "Hero")
-    object About : Screen("about", Icons.Default.Person, "About")
+    object About : Screen("about", Icons.Default.Person, "About Me")
     object Education : Screen("education", Icons.Default.School, "Education")
     object Experience : Screen("experience", Icons.Default.Work, "Experience")
     object Projects : Screen("projects", Icons.Default.Code, "Projects")
     object Skills : Screen("skills", Icons.Default.Star, "Skills")
-    object Achievements : Screen("achievements", Icons.Default.EmojiEvents, "Achievements")
-    object Publications : Screen("publications", Icons.Default.Article, "Publications")
-    object Contact : Screen("contact", Icons.Default.Email, "Contact")
+    object Achievements : Screen("achievements", Icons.Default.EmojiEvents, "Achievements & Recognition")
+    object Publications : Screen("publications", Icons.AutoMirrored.Filled.Article, "Research & Publications")
+    object Contact : Screen("contact", Icons.Default.Email, "Contact Me")
 }
 
 val drawerItems = listOf(
