@@ -5,12 +5,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.School
@@ -38,31 +39,32 @@ fun AboutScreen(portfolio: Portfolio, modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            Text(
-                text = "About Me",
-                style = MaterialTheme.typography.displayMedium,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(16.dp))
             Image(
                 painter = painterResource(id = R.drawable.alokparna_speaking),
                 contentDescription = "Alokparna Mitra speaking at an event",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
+                    .size(192.dp)
+                    .clip(CircleShape)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "I'm a passionate ${portfolio.title} currently pursuing ${portfolio.education.first().degree} at the ${portfolio.education.first().institution} with a stellar ${portfolio.education.first().score}. My journey in technology is driven by a desire to create innovative solutions that make a real difference.",
-                style = MaterialTheme.typography.bodyLarge,
+                text = portfolio.name,
+                style = MaterialTheme.typography.displaySmall,
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "As ${portfolio.experience.first().role} of ${portfolio.experience.first().company}, I'm developing an AI-integrated healthcare platform that combines cutting-edge technology with practical healthcare solutions. My expertise spans from web development to blockchain, IoT, and hardware prototyping.",
-                style = MaterialTheme.typography.bodyLarge,
+                text = portfolio.title,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "I'm a passionate ${portfolio.title} currently pursuing ${portfolio.education.first().degree} at the ${portfolio.education.first().institution} with a stellar ${portfolio.education.first().score}. My journey in technology is driven by a desire to create innovative solutions that make a real difference. As ${portfolio.experience.first().role} of ${portfolio.experience.first().company}, I'm developing an AI-integrated healthcare platform that combines cutting-edge technology with practical healthcare solutions.",
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
             Spacer(modifier = Modifier.height(32.dp))
             Row(
@@ -92,18 +94,19 @@ fun AboutScreen(portfolio: Portfolio, modifier: Modifier = Modifier) {
 @Composable
 fun InfoCard(icon: androidx.compose.ui.graphics.vector.ImageVector, title: String, subtitle: String) {
     Card(
-        modifier = Modifier.size(110.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+        modifier = Modifier.size(120.dp, 140.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = title, style = MaterialTheme.typography.titleMedium)
-            Text(text = subtitle, style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
+            Text(text = title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
+            Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
         }
     }
 }

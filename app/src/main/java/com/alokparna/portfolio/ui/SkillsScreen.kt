@@ -1,6 +1,7 @@
 package com.alokparna.portfolio.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,18 +50,18 @@ fun SkillsScreen(portfolio: Portfolio, modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
+        item(span = { GridItemSpan(maxLineSpan) }) {
             Text(
                 text = "Technical Skills",
                 style = MaterialTheme.typography.displayMedium,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
             )
         }
         items(portfolio.skills.size) { index ->
             SkillCategoryCard(portfolio.skills[index])
         }
-        item {
+        item(span = { GridItemSpan(maxLineSpan) }) {
             AdditionalExpertiseCard()
         }
     }
@@ -68,11 +70,12 @@ fun SkillsScreen(portfolio: Portfolio, modifier: Modifier = Modifier) {
 @Composable
 fun SkillCategoryCard(category: SkillCategory) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(0.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
@@ -95,7 +98,7 @@ fun SkillCategoryCard(category: SkillCategory) {
                 Text(text = category.title, style = MaterialTheme.typography.headlineSmall)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 category.skills.forEach { skill ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
@@ -104,7 +107,7 @@ fun SkillCategoryCard(category: SkillCategory) {
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.primary)
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(12.dp))
                         Text(text = skill, style = MaterialTheme.typography.bodyLarge)
                     }
                 }
@@ -116,24 +119,25 @@ fun SkillCategoryCard(category: SkillCategory) {
 @Composable
 fun AdditionalExpertiseCard() {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(0.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
-        Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "Additional Expertise", style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "Full-Stack", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+                    Text(text = "Full-Stack", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
                     Text(text = "Development", style = MaterialTheme.typography.bodyMedium)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "UI/UX", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+                    Text(text = "UI/UX", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
                     Text(text = "Design", style = MaterialTheme.typography.bodyMedium)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "Open-Source", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+                    Text(text = "Open-Source", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
                     Text(text = "Contributions", style = MaterialTheme.typography.bodyMedium)
                 }
             }

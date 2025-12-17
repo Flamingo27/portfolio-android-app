@@ -2,6 +2,8 @@ package com.alokparna.portfolio.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
@@ -31,9 +33,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -59,11 +60,11 @@ fun ProjectsScreen(portfolio: Portfolio, modifier: Modifier = Modifier) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
         }
         items(portfolio.projects.size) { index ->
             ProjectCard(portfolio.projects[index])
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
@@ -72,9 +73,10 @@ fun ProjectsScreen(portfolio: Portfolio, modifier: Modifier = Modifier) {
 @Composable
 fun ProjectCard(project: Project) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(0.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column {
             Box(modifier = Modifier.height(200.dp)) {
@@ -91,24 +93,15 @@ fun ProjectCard(project: Project) {
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = project.gradient.map { Color(android.graphics.Color.parseColor(it)) }
-                            )
-                        )
-                )
             }
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(20.dp)) {
                 Text(text = project.title, style = MaterialTheme.typography.headlineMedium)
                 Text(
                     text = project.subtitle,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(text = project.description, style = MaterialTheme.typography.bodyLarge)
                 if (project.achievement.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(16.dp))
@@ -119,7 +112,7 @@ fun ProjectCard(project: Project) {
                                 color = MaterialTheme.colorScheme.secondaryContainer,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .padding(8.dp)
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         Icon(
                             Icons.Default.Star,
@@ -135,7 +128,7 @@ fun ProjectCard(project: Project) {
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     project.tech.forEach {
                         Text(
                             text = it,
@@ -164,15 +157,16 @@ fun ProjectCard(project: Project) {
 
 @Composable
 fun LinkButton(link: ProjectLink) {
+    val uriHandler = LocalUriHandler.current
     IconButton(
-        onClick = { /* TODO */ },
+        onClick = { uriHandler.openUri(link.url) },
         modifier = Modifier
             .size(48.dp)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.primary)
     ) {
         val icon = when (link.type) {
-            "demo" -> Icons.Default.ArrowForward
+            "demo" -> Icons.AutoMirrored.Filled.ArrowForward
             "drive" -> Icons.Default.DateRange
             else -> Icons.Default.Info
         }
