@@ -34,9 +34,9 @@ This is a fully native Android application built with Kotlin and Jetpack Compose
 | :---: | :---: | :---: |
 | <img src="imgs/experience.png" width="250"> | <img src="imgs/skills.png" width="250"> | <img src="imgs/achievements.png" width="250"> |
 
-| Publications | Contact |
-| :---: | :---: |
-| <img src="imgs/publications.png" width="250"> | <img src="imgs/contact.png" width="250"> |
+| Publications | Contact | |
+| :---: | :---: | :---: |
+| <img src="imgs/publications.png" width="250"> | <img src="imgs/contact.png" width="250"> | |
 
 ## 🚀 Setup & Building
 
@@ -77,3 +77,7 @@ The signed APK will be generated at `app/build/outputs/apk/release/app-release.a
 
 - **[Portfolio PWA](https://github.com/Flamingo27/portfolio-pwa)**: The Progressive Web App version of this portfolio, built with React and TypeScript.
 - **[Portfolio Website](https://portfolio-alokparna.pages.dev)**: The live, deployed version of the portfolio website.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
