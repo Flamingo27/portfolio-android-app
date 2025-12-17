@@ -1,6 +1,5 @@
 package com.alokparna.portfolio.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +34,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.alokparna.portfolio.R
 import com.alokparna.portfolio.data.Portfolio
 import com.alokparna.portfolio.data.Project
@@ -76,18 +76,19 @@ fun ProjectCard(project: Project) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column {
-            val imageId = when (project.image) {
-                "project_unicred" -> R.drawable.project_unicred
-                "project_irrigation" -> R.drawable.project_irrigation
-                "project_stocks" -> R.drawable.project_stocks
-                "project_assistive" -> R.drawable.project_assistive
-                else -> R.drawable.ic_launcher_background // A default placeholder
-            }
-            Image(
-                painter = painterResource(id = imageId),
+            AsyncImage(
+                model = when (project.image) {
+                    "project_unicred" -> R.drawable.project_unicred
+                    "project_irrigation" -> R.drawable.project_irrigation
+                    "project_stocks" -> R.drawable.project_stocks
+                    "project_assistive" -> R.drawable.project_assistive
+                    else -> R.drawable.ic_launcher_background // A default placeholder
+                },
                 contentDescription = project.title,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth().height(200.dp)
+                modifier = Modifier.fillMaxWidth().height(200.dp),
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                error = painterResource(id = R.drawable.ic_launcher_background)
             )
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(text = project.title, style = MaterialTheme.typography.headlineMedium)

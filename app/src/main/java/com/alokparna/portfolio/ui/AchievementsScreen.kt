@@ -23,7 +23,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -60,30 +62,29 @@ fun AchievementCard(achievement: Achievement) {
         elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
-        Column {
+        Column(modifier = Modifier.padding(20.dp)) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp)
-                    .background(MaterialTheme.colorScheme.primary)
-            )
-            Column(modifier = Modifier.padding(20.dp)) {
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primary),
+                contentAlignment = Alignment.Center
+            ) {
                 Icon(
                     imageVector = getIconForAchievement(achievement.icon),
                     contentDescription = achievement.title,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(48.dp)
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(text = achievement.title, style = MaterialTheme.typography.headlineSmall)
-                Text(
-                    text = achievement.event,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = achievement.description, style = MaterialTheme.typography.bodyLarge)
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = achievement.title, style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = achievement.event,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = achievement.description, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }

@@ -87,9 +87,9 @@ fun ContactScreen(portfolio: Portfolio, modifier: Modifier = Modifier, viewModel
 
         item {
             SendMessageForm(
-                name = name, onNameChange = { },
-                email = email, onEmailChange = { },
-                message = message, onMessageChange = { },
+                name = name, onNameChange = { name = it },
+                email = email, onEmailChange = { email = it },
+                message = message, onMessageChange = { message = it },
                 uiState = contactUiState,
                 onSendMessage = { viewModel.sendContactMessage(name, email, message) },
                 onResetState = { viewModel.resetContactState() }
@@ -144,7 +144,7 @@ fun ContactInfoItem(icon: ImageVector? = null, painter: androidx.compose.ui.grap
     }
 }
 
-fun isEmailValid(email: String): Boolean {
+private fun isEmailValid(email: String): Boolean {
     return Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
 
@@ -157,7 +157,7 @@ fun SendMessageForm(
     onSendMessage: () -> Unit,
     onResetState: () -> Unit
 ) {
-    var isEmailValid by remember(email) { mutableStateOf(isEmailValid(email)) }
+    var isEmailValid by remember { mutableStateOf(true) }
 
     Card(
         modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(16.dp)),
@@ -179,9 +179,9 @@ fun SendMessageForm(
                 label = { Text("Email") }, 
                 modifier = Modifier.fillMaxWidth(), 
                 enabled = uiState !is ContactUiState.Loading,
-                isError = !isEmailValid && email.isNotEmpty()
+                isError = !isEmailValid
             )
-            if (!isEmailValid && email.isNotEmpty()) {
+            if (!isEmailValid) {
                 Text("Invalid email address", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -190,7 +190,7 @@ fun SendMessageForm(
             Button(
                 onClick = onSendMessage,
                 modifier = Modifier.fillMaxWidth().height(52.dp),
-                enabled = uiState !is ContactUiState.Loading && name.isNotEmpty() && isEmailValid && message.isNotEmpty()
+                enabled = uiState !is ContactUiState.Loading && name.isNotEmpty() && isEmailValid && email.isNotEmpty() && message.isNotEmpty()
             ) {
                 if (uiState is ContactUiState.Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)

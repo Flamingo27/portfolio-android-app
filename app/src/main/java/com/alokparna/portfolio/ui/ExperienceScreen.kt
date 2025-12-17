@@ -2,33 +2,46 @@ package com.alokparna.portfolio.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.*
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.alokparna.portfolio.data.Experience
 import com.alokparna.portfolio.data.Portfolio
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.LinkAnnotation
 
 @Composable
-fun ExperienceScreen(
-    portfolio: Portfolio,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(
-        modifier = modifier.padding(16.dp)
-    ) {
+fun ExperienceScreen(portfolio: Portfolio, modifier: Modifier = Modifier) {
+    LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
             Text(
                 text = "Experience",
@@ -38,7 +51,6 @@ fun ExperienceScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
         }
-
         items(portfolio.experience.size) { index ->
             ExperienceCard(portfolio.experience[index])
             Spacer(modifier = Modifier.height(20.dp))
@@ -48,39 +60,22 @@ fun ExperienceScreen(
 
 @Composable
 fun ExperienceCard(experience: Experience) {
-
+    val uriHandler = LocalUriHandler.current
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .border(
-                1.dp,
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                RoundedCornerShape(16.dp)
-            ),
+        modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-
-            // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = experience.role,
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 4.dp)
-                    ) {
+                    Text(text = experience.role, style = MaterialTheme.typography.headlineSmall)
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
                         Icon(
                             Icons.Default.Business,
                             contentDescription = "Company",
@@ -95,11 +90,7 @@ fun ExperienceCard(experience: Experience) {
                         )
                     }
                 }
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 4.dp)
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
                     Icon(
                         Icons.Default.CalendarToday,
                         contentDescription = "Period",
@@ -114,22 +105,15 @@ fun ExperienceCard(experience: Experience) {
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Description
             Text(
                 text = experience.description,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Highlights
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 experience.highlights.forEach { highlight ->
                     Row(verticalAlignment = Alignment.Top) {
-
                         Box(
                             modifier = Modifier
                                 .padding(top = 8.dp)
@@ -137,65 +121,44 @@ fun ExperienceCard(experience: Experience) {
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.primary)
                         )
-
                         Spacer(modifier = Modifier.width(12.dp))
 
-                        val annotatedText = buildAnnotatedString {
+                        val annotatedString = buildAnnotatedString {
                             val isDemo = highlight.contains("Live Demo")
                             val isReport = highlight.contains("TechMag Report")
 
-                            when {
-                                isDemo && experience.links.containsKey("demo") -> {
-                                    val idx = highlight.indexOf("Live Demo")
-                                    append(highlight.take(idx))
-
-                                    withLink(
-                                        LinkAnnotation.Url(
-                                            url = experience.links["demo"]!!,
-                                            styles = TextLinkStyles(
-                                                style = SpanStyle(
-                                                    color = MaterialTheme.colorScheme.primary,
-                                                    textDecoration = TextDecoration.Underline
-                                                )
-                                            )
-                                        )
-                                    ) {
-                                        append("Live Demo")
-                                    }
-
-                                    append(highlight.drop(idx + "Live Demo".length))
+                            if (isDemo && experience.links.containsKey("demo")) {
+                                val startIndex = highlight.indexOf("Live Demo")
+                                append(highlight.take(startIndex))
+                                pushLink(LinkAnnotation.Url(experience.links["demo"]!!))
+                                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
+                                    append("Live Demo")
                                 }
-
-                                isReport && experience.links.containsKey("report") -> {
-                                    val idx = highlight.indexOf("TechMag Report")
-                                    append(highlight.take(idx))
-
-                                    withLink(
-                                        LinkAnnotation.Url(
-                                            url = experience.links["report"]!!,
-                                            styles = TextLinkStyles(
-                                                style = SpanStyle(
-                                                    color = MaterialTheme.colorScheme.primary,
-                                                    textDecoration = TextDecoration.Underline
-                                                )
-                                            )
-                                        )
-                                    ) {
-                                        append("TechMag Report")
-                                    }
-
-                                    append(highlight.drop(idx + "TechMag Report".length))
+                                pop()
+                                append(highlight.drop(startIndex + "Live Demo".length))
+                            } else if (isReport && experience.links.containsKey("report")) {
+                                val startIndex = highlight.indexOf("TechMag Report")
+                                append(highlight.take(startIndex))
+                                pushLink(LinkAnnotation.Url(experience.links["report"]!!))
+                                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
+                                    append("TechMag Report")
                                 }
-
-                                else -> append(highlight)
+                                pop()
+                                append(highlight.drop(startIndex + "TechMag Report".length))
+                            } else {
+                                append(highlight)
                             }
                         }
 
-                        Text(
-                            text = annotatedText,
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
+                        ClickableText(
+                            text = annotatedString,
+                            style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+                            onClick = { offset ->
+                                annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                                    .firstOrNull()?.let { annotation ->
+                                        uriHandler.openUri(annotation.item)
+                                    }
+                            }
                         )
                     }
                 }
