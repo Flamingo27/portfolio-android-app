@@ -26,15 +26,17 @@ This is a fully native Android application built with Kotlin and Jetpack Compose
 
 ## 📸 Screenshots
 
-*(You can add screenshots of your app here to showcase the design)*
-
-| Hero Screen | About Me | Projects |
+| Hero | About | Projects |
 | :---: | :---: | :---: |
-| *(screenshot)* | *(screenshot)* | *(screenshot)* |
+| <img src="imgs/hero.png" width="250"> | <img src="imgs/about.png" width="250"> | <img src="imgs/projects.png" width="250"> |
 
-| Experience | Skills | Contact Me |
+| Experience | Skills | Achievements |
 | :---: | :---: | :---: |
-| *(screenshot)* | *(screenshot)* | *(screenshot)* |
+| <img src="imgs/experience.png" width="250"> | <img src="imgs/skills.png" width="250"> | <img src="imgs/achievements.png" width="250"> |
+
+| Publications | Contact | |
+| :---: | :---: | :---: |
+| <img src="imgs/publications.png" width="250"> | <img src="imgs/contact.png" width="250"> | |
 
 ## 🚀 Setup & Building
 
