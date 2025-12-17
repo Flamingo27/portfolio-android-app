@@ -26,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -85,19 +84,14 @@ fun EducationCard(education: Education) {
                         .size(52.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(
-                            brush = Brush.verticalGradient(
-                                colors = if (education.highlight) listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.secondary
-                                ) else listOf(Color.Gray, Color.DarkGray)
-                            )
+                            color = if (education.highlight) MaterialTheme.colorScheme.primary else Color.Gray
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.School,
                         contentDescription = "${education.institution} logo",
-                        tint = Color.White,
+                        tint = if (education.highlight) MaterialTheme.colorScheme.onPrimary else Color.White,
                         modifier = Modifier.size(28.dp)
                     )
                 }

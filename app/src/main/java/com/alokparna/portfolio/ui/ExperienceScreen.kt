@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -37,6 +36,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.alokparna.portfolio.data.Experience
 import com.alokparna.portfolio.data.Portfolio
+import androidx.compose.ui.text.style.TextDecoration
 
 @Composable
 fun ExperienceScreen(portfolio: Portfolio, modifier: Modifier = Modifier) {
@@ -122,30 +122,28 @@ fun ExperienceCard(experience: Experience) {
                         )
                         Spacer(modifier = Modifier.width(12.dp))
 
-                        val isDemo = highlight.contains("Live Demo")
-                        val isReport = highlight.contains("TechMag Report")
-
                         val annotatedString = buildAnnotatedString {
+                            val isDemo = highlight.contains("Live Demo")
+                            val isReport = highlight.contains("TechMag Report")
+
                             if (isDemo && experience.links.containsKey("demo")) {
                                 val startIndex = highlight.indexOf("Live Demo")
-                                val endIndex = startIndex + "Live Demo".length
-                                append(highlight.substring(0, startIndex))
+                                append(highlight.take(startIndex))
                                 pushStringAnnotation(tag = "URL", annotation = experience.links["demo"]!!)
-                                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
                                     append("Live Demo")
                                 }
                                 pop()
-                                append(highlight.substring(endIndex))
+                                append(highlight.drop(startIndex + "Live Demo".length))
                             } else if (isReport && experience.links.containsKey("report")) {
                                 val startIndex = highlight.indexOf("TechMag Report")
-                                val endIndex = startIndex + "TechMag Report".length
-                                append(highlight.substring(0, startIndex))
+                                append(highlight.take(startIndex))
                                 pushStringAnnotation(tag = "URL", annotation = experience.links["report"]!!)
-                                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
                                     append("TechMag Report")
                                 }
                                 pop()
-                                append(highlight.substring(endIndex))
+                                append(highlight.drop(startIndex + "TechMag Report".length))
                             } else {
                                 append(highlight)
                             }

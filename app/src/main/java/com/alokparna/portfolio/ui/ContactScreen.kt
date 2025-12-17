@@ -1,5 +1,6 @@
 package com.alokparna.portfolio.ui
 
+import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
@@ -38,13 +38,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.alokparna.portfolio.R
 import com.alokparna.portfolio.data.Portfolio
 
 @Composable
@@ -86,9 +87,9 @@ fun ContactScreen(portfolio: Portfolio, modifier: Modifier = Modifier, viewModel
 
         item {
             SendMessageForm(
-                name = name, onNameChange = { name = it },
-                email = email, onEmailChange = { email = it },
-                message = message, onMessageChange = { message = it },
+                name = name, onNameChange = { },
+                email = email, onEmailChange = { },
+                message = message, onMessageChange = { },
                 uiState = contactUiState,
                 onSendMessage = { viewModel.sendContactMessage(name, email, message) },
                 onResetState = { viewModel.resetContactState() }
@@ -108,13 +109,13 @@ fun ContactInfoSection(portfolio: Portfolio) {
 
         Spacer(modifier = Modifier.height(16.dp))
         Text("Connect Online", style = MaterialTheme.typography.headlineMedium)
-        ContactInfoItem(icon = Icons.Default.Link, label = "GitHub", value = portfolio.contact.github, onClick = { uriHandler.openUri(portfolio.contact.github) })
-        ContactInfoItem(icon = Icons.Default.Link, label = "LinkedIn", value = portfolio.contact.linkedin, onClick = { uriHandler.openUri(portfolio.contact.linkedin) })
+        ContactInfoItem(painter = painterResource(id = R.drawable.github_logo), label = "GitHub", value = "Flamingo27", onClick = { uriHandler.openUri(portfolio.contact.github) })
+        ContactInfoItem(painter = painterResource(id = R.drawable.linkedin_logo), label = "LinkedIn", value = "alokparna-mitra", onClick = { uriHandler.openUri(portfolio.contact.linkedin) })
     }
 }
 
 @Composable
-fun ContactInfoItem(icon: ImageVector, label: String, value: String, onClick: () -> Unit) {
+fun ContactInfoItem(icon: ImageVector? = null, painter: androidx.compose.ui.graphics.painter.Painter? = null, label: String, value: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(16.dp)).clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
@@ -126,14 +127,14 @@ fun ContactInfoItem(icon: ImageVector, label: String, value: String, onClick: ()
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
-                        )
-                    ),
+                    .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(icon, contentDescription = label, tint = Color.White)
+                if (icon != null) {
+                    Icon(icon, contentDescription = label, tint = MaterialTheme.colorScheme.onPrimary)
+                } else if (painter != null) {
+                    Icon(painter = painter, contentDescription = label, tint = MaterialTheme.colorScheme.onPrimary)
+                }
             }
             Column(modifier = Modifier.padding(start = 16.dp)) {
                 Text(label, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
@@ -141,6 +142,10 @@ fun ContactInfoItem(icon: ImageVector, label: String, value: String, onClick: ()
             }
         }
     }
+}
+
+fun isEmailValid(email: String): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
 
 @Composable
@@ -152,6 +157,8 @@ fun SendMessageForm(
     onSendMessage: () -> Unit,
     onResetState: () -> Unit
 ) {
+    var isEmailValid by remember(email) { mutableStateOf(isEmailValid(email)) }
+
     Card(
         modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
@@ -163,14 +170,27 @@ fun SendMessageForm(
             Spacer(modifier = Modifier.height(24.dp))
             OutlinedTextField(value = name, onValueChange = onNameChange, label = { Text("Name") }, modifier = Modifier.fillMaxWidth(), enabled = uiState !is ContactUiState.Loading)
             Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(value = email, onValueChange = onEmailChange, label = { Text("Email") }, modifier = Modifier.fillMaxWidth(), enabled = uiState !is ContactUiState.Loading)
+            OutlinedTextField(
+                value = email, 
+                onValueChange = { 
+                    onEmailChange(it)
+                    isEmailValid = isEmailValid(it)
+                }, 
+                label = { Text("Email") }, 
+                modifier = Modifier.fillMaxWidth(), 
+                enabled = uiState !is ContactUiState.Loading,
+                isError = !isEmailValid && email.isNotEmpty()
+            )
+            if (!isEmailValid && email.isNotEmpty()) {
+                Text("Invalid email address", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+            }
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(value = message, onValueChange = onMessageChange, label = { Text("Message") }, modifier = Modifier.fillMaxWidth(), maxLines = 5, enabled = uiState !is ContactUiState.Loading)
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = onSendMessage,
                 modifier = Modifier.fillMaxWidth().height(52.dp),
-                enabled = uiState !is ContactUiState.Loading
+                enabled = uiState !is ContactUiState.Loading && name.isNotEmpty() && isEmailValid && message.isNotEmpty()
             ) {
                 if (uiState is ContactUiState.Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)

@@ -3,9 +3,7 @@ package com.alokparna.portfolio.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -20,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
@@ -79,21 +76,19 @@ fun ProjectCard(project: Project) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column {
-            Box(modifier = Modifier.height(200.dp)) {
-                val imageId = when (project.image) {
-                    "project_unicred" -> R.drawable.project_unicred
-                    "project_irrigation" -> R.drawable.project_irrigation
-                    "project_stocks" -> R.drawable.project_stocks
-                    "project_assistive" -> R.drawable.project_assistive
-                    else -> R.drawable.hero_background
-                }
-                Image(
-                    painter = painterResource(id = imageId),
-                    contentDescription = project.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            val imageId = when (project.image) {
+                "project_unicred" -> R.drawable.project_unicred
+                "project_irrigation" -> R.drawable.project_irrigation
+                "project_stocks" -> R.drawable.project_stocks
+                "project_assistive" -> R.drawable.project_assistive
+                else -> R.drawable.ic_launcher_background // A default placeholder
             }
+            Image(
+                painter = painterResource(id = imageId),
+                contentDescription = project.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxWidth().height(200.dp)
+            )
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(text = project.title, style = MaterialTheme.typography.headlineMedium)
                 Text(
@@ -108,6 +103,7 @@ fun ProjectCard(project: Project) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
+                            .fillMaxWidth()
                             .background(
                                 color = MaterialTheme.colorScheme.secondaryContainer,
                                 shape = RoundedCornerShape(8.dp)
@@ -165,11 +161,10 @@ fun LinkButton(link: ProjectLink) {
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.primary)
     ) {
-        val icon = when (link.type) {
-            "demo" -> Icons.AutoMirrored.Filled.ArrowForward
-            "drive" -> Icons.Default.DateRange
-            else -> Icons.Default.Info
+        when (link.type) {
+            "demo" -> Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = link.label, tint = MaterialTheme.colorScheme.onPrimary)
+            "drive" -> Icon(painter = painterResource(id = R.drawable.google_drive_logo), contentDescription = link.label, tint = MaterialTheme.colorScheme.onPrimary)
+            else -> Icon(Icons.Default.Info, contentDescription = link.label, tint = MaterialTheme.colorScheme.onPrimary)
         }
-        Icon(icon, contentDescription = link.label, tint = MaterialTheme.colorScheme.onPrimary)
     }
 }
