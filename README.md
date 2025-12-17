@@ -34,9 +34,9 @@ This is a fully native Android application built with Kotlin and Jetpack Compose
 | :---: | :---: | :---: |
 | <img src="imgs/experience.png" width="250"> | <img src="imgs/skills.png" width="250"> | <img src="imgs/achievements.png" width="250"> |
 
-| Publications | Contact | |
-| :---: | :---: | :---: |
-| <img src="imgs/publications.png" width="250"> | <img src="imgs/contact.png" width="250"> | |
+| Publications | Contact |
+| :---: | :---: |
+| <img src="imgs/publications.png" width="250"> | <img src="imgs/contact.png" width="250"> |
 
 ## 🚀 Setup & Building
 
@@ -72,3 +72,8 @@ Once your keystore and properties file are set up, you can build a release-ready
 ```
 
 The signed APK will be generated at `app/build/outputs/apk/release/app-release.apk`. You can then upload this file to a GitHub release or share it directly.
+
+## 🔗 Related Projects
+
+- **[Portfolio PWA](https://github.com/Flamingo27/portfolio-pwa)**: The Progressive Web App version of this portfolio, built with React and TypeScript.
+- **[Portfolio Website](https://portfolio-alokparna.pages.dev)**: The live, deployed version of the portfolio website.
