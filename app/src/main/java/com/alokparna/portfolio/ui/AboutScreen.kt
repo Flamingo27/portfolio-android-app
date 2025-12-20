@@ -61,7 +61,14 @@ fun AboutScreen(portfolio: Portfolio, modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "I'm a passionate ${portfolio.title} currently pursuing ${portfolio.education.first().degree} at the ${portfolio.education.first().institution} with a stellar ${portfolio.education.first().score}. My journey in technology is driven by a desire to create innovative solutions that make a real difference. As ${portfolio.experience.first().role} of ${portfolio.experience.first().company}, I'm developing an AI-integrated healthcare platform that combines cutting-edge technology with practical healthcare solutions.",
+                text = "I'm a passionate Full-Stack Developer currently pursuing B.Tech in Computer Science & Engineering at the Institute of Engineering & Management with a stellar 9.1 GPA. My journey in technology is driven by a desire to create innovative solutions that make a real difference.",
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "As Co-Founder of Cura Horizon, I'm developing an AI-integrated healthcare platform that combines cutting-edge technology with practical healthcare solutions. My expertise spans from web development to blockchain, IoT, and hardware prototyping.",
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 16.dp)
